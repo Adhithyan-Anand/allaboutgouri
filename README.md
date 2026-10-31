@@ -11,6 +11,8 @@ site/            the website itself (open site/index.html in a browser to previe
 nginx/           nginx config (security headers, caching, /healthz)
 Dockerfile       nginx-unprivileged, runs as non-root
 docker-compose.yml
+Jenkinsfile      build + deploy pipeline
+scripts/verify.py  pre-deploy checks (run by Jenkins, or by hand)
 ```
 
 ## Run it on the server
@@ -40,13 +42,45 @@ Add a public hostname `allaboutgouri.in` → `http://localhost:8088` to your exi
 
 Recommended Cloudflare settings for the zone: SSL/TLS **Full**, Always Use HTTPS **on**, Brotli **on**. Leave Rocket Loader **off** (it rewrites scripts and fights the animations).
 
+## Deploy with Jenkins
+
+The `Jenkinsfile` builds and deploys on the same server Jenkins runs on. Every push to `main` goes live within about 5 minutes.
+
+What each run does:
+
+1. **Verify:** `scripts/verify.py` checks that every image, CSS and JS file the page uses exists, and that the inline script still matches the security policy.
+2. **Build:** builds a new image and keeps the current one as `allaboutgouri:previous`.
+3. **Deploy:** runs `docker compose up -d`.
+4. **Health check:** waits for the container to report healthy and for the page to actually load.
+5. **Purge Cloudflare cache:** clears the cache so visitors see the change straight away.
+
+If the health check fails, the previous image is put back automatically.
+
+**One-time setup**
+
+1. On the server: `sudo usermod -aG docker jenkins && sudo systemctl restart jenkins`. Make sure `python3`, `curl` and the Docker compose plugin are installed.
+2. In Jenkins: New Item → **Pipeline** → Pipeline script from SCM → Git → `https://github.com/Adhithyan-Anand/allaboutgouri.git`, branch `*/main`, script path `Jenkinsfile`. The repo is public, so no Git credentials are needed.
+3. Optional credentials (Manage Jenkins → Credentials → Secret text):
+
+| ID | What | Used for |
+| --- | --- | --- |
+| `cloudflare-zone-id` | Zone ID from the allaboutgouri.in overview page | Cache purge |
+| `cloudflare-api-token` | API token with **Zone → Cache Purge** permission for this zone only | Cache purge |
+| `cloudflare-tunnel-token` | Tunnel token | Only if you tick `USE_TUNNEL` |
+
+Without the Cloudflare credentials the deploy still works; the run is just marked unstable with a note to purge by hand.
+
+4. Click **Build Now** once. Jenkins needs a first run to pick up the 5-minute polling trigger and the parameters.
+
+For instant deploys instead of polling, expose Jenkins through your Cloudflare tunnel and add a GitHub webhook (`https://<jenkins-host>/github-webhook/`, needs the GitHub plugin). Then you can drop the `pollSCM` line.
+
 ## Updating content
 
 - Text: edit `site/index.html`.
 - New work: drop a `.webp` into `site/img/` and copy any existing `<figure class="piece">…</figure>` block. Keep `width` and `height` matching the image so the page doesn't jump while loading.
-- Then `docker compose up -d --build`, and purge the Cloudflare cache if the change doesn't show.
+- Then push to `main` and Jenkins deploys it. Without Jenkins: `docker compose up -d --build`, then purge the Cloudflare cache.
 
-If you edit the small inline `<script>` in the `<head>`, its hash in `nginx/default.conf` (Content-Security-Policy) must be updated too, or browsers will block it. Get the new hash with:
+If you edit the small inline `<script>` in the `<head>`, its hash in `nginx/default.conf` (Content-Security-Policy) must be updated too, or browsers will block it. `python3 scripts/verify.py` will tell you if it's out of date. Get the new hash with:
 
 ```bash
 python3 -c "import re,hashlib,base64;s=open('site/index.html').read();m=re.search(r'<script>(.*?)</script>',s,re.S);print(base64.b64encode(hashlib.sha256(m.group(1).encode()).digest()).decode())"

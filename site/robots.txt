@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://allaboutgouri.in/sitemap.xml

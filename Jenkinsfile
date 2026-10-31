@@ -89,30 +89,7 @@ pipeline {
       }
     }
 
-    stage('Purge Cloudflare cache') {
-      when { expression { params.PURGE_CACHE } }
-      steps {
-        script {
-          try {
-            withCredentials([
-              string(credentialsId: 'cloudflare-zone-id', variable: 'CF_ZONE'),
-              string(credentialsId: 'cloudflare-api-token', variable: 'CF_TOKEN')
-            ]) {
-              sh '''
-                set -e
-                curl -fsS -X POST "https://api.cloudflare.com/client/v4/zones/$CF_ZONE/purge_cache" \\
-                  -H "Authorization: Bearer $CF_TOKEN" \\
-                  -H "Content-Type: application/json" \\
-                  --data '{"purge_everything":true}' | grep -q '"success":true'
-                echo "Cloudflare cache purged"
-              '''
-            }
-          } catch (err) {
-            unstable("Cache purge skipped: ${err.getMessage()}. The site is deployed; purge manually if changes don't show.")
-          }
-        }
-      }
-    }
+    
   }
 
   post {

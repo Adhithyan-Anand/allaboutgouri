@@ -1,4 +1,4 @@
-/* allaboutgouri.in · motion
+/* gouri-demo.resonor.in · motion
    No libraries: letter drops, scroll reveals, smooth wheel scrolling,
    parallax, a pinned horizontal gallery, counters and a lightbox. */
 (() => {

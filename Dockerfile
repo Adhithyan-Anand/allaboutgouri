@@ -1,4 +1,4 @@
-# allaboutgouri.in · static portfolio served by nginx (runs as non-root)
+# gouri-demo.resonor.in · static portfolio served by nginx (runs as non-root)
 FROM nginxinc/nginx-unprivileged:1.27-alpine
 
 LABEL org.opencontainers.image.title="allaboutgouri" \

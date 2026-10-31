@@ -1,4 +1,4 @@
-# allaboutgouri.in
+# gouri-demo.resonor.in
 
 Gouri Lakshmi's portfolio. A single static page (HTML, CSS, vanilla JS, no build step), served by nginx in a container and published through a Cloudflare Tunnel.
 
@@ -26,20 +26,19 @@ curl -I http://localhost:8088        # should say 200 OK
 
 The site listens on `127.0.0.1:8088` only, so nothing is open to the internet until Cloudflare is connected. Change the port with `WEB_PORT` in `.env`.
 
-## Put it on allaboutgouri.in with Cloudflare
+## Put it on gouri-demo.resonor.in with Cloudflare
 
 **Option A · new tunnel just for this site**
 
 1. Cloudflare dashboard → Zero Trust → Networks → Tunnels → Create a tunnel → Cloudflared → name it `allaboutgouri` → pick **Docker**, and copy the token after `--token`.
 2. `cp .env.example .env` and paste it as `CLOUDFLARE_TUNNEL_TOKEN`.
 3. In the tunnel's **Public hostnames** tab add:
-   - `allaboutgouri.in` → Service `HTTP` → `web:8080`
-   - `www.allaboutgouri.in` → Service `HTTP` → `web:8080` (or a redirect rule to the apex)
+   - `gouri-demo.resonor.in` → Service `HTTP` → `web:8080`
 4. `docker compose --profile tunnel up -d`
 
 **Option B · cloudflared already runs on this server**
 
-Add a public hostname `allaboutgouri.in` → `http://localhost:8088` to your existing tunnel. Only run `docker compose up -d`.
+Add a public hostname `gouri-demo.resonor.in` → `http://localhost:8088` to your existing tunnel. Only run `docker compose up -d`.
 
 Recommended Cloudflare settings for the zone: SSL/TLS **Full**, Always Use HTTPS **on**, Brotli **on**. Leave Rocket Loader **off** (it rewrites scripts and fights the animations).
 
@@ -65,7 +64,7 @@ If the health check fails, the previous image is put back automatically.
 
 | ID | What | Used for |
 | --- | --- | --- |
-| `cloudflare-zone-id` | Zone ID from the allaboutgouri.in overview page | Cache purge |
+| `cloudflare-zone-id` | Zone ID from the resonor.in overview page | Cache purge |
 | `cloudflare-api-token` | API token with **Zone → Cache Purge** permission for this zone only | Cache purge |
 | `cloudflare-tunnel-token` | Tunnel token | Only if you tick `USE_TUNNEL` |
 

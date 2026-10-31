@@ -1,4 +1,4 @@
-// allaboutgouri.in · build and deploy on the server Jenkins runs on.
+// gouri-demo.resonor.in · build and deploy on the server Jenkins runs on.
 //
 // Flow: verify -> build image -> deploy with docker compose -> health check
 //       -> purge Cloudflare cache. If the new container is unhealthy, the

@@ -4,10 +4,10 @@
   "name": "Gouri Lakshmi - Copywriter",
   "headline": "Creative copywriter portfolio",
   "description": "Ads, social content and campaigns by Gouri Lakshmi, creative copywriter from Kerala.",
-  "url": "https://allaboutgouri.in/",
+  "url": "https://gouri-demo.resonor.in/",
   "image": {
     "@type": "ImageObject",
-    "url": "https://allaboutgouri.in/og.jpg",
+    "url": "https://gouri-demo.resonor.in/og.jpg",
     "width": 1200,
     "height": 630
   },

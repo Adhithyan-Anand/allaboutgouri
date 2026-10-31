@@ -1,0 +1,27 @@
+{
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "name": "Gouri Lakshmi - Copywriter",
+  "headline": "Creative copywriter portfolio",
+  "description": "Ads, social content and campaigns by Gouri Lakshmi, creative copywriter from Kerala.",
+  "url": "https://allaboutgouri.in/",
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://allaboutgouri.in/og.jpg",
+    "width": 1200,
+    "height": 630
+  },
+  "about": {
+    "@type": "Person",
+    "name": "Gouri Lakshmi",
+    "jobTitle": "Creative Copywriter",
+    "email": "gourilakshmi.t.m@gmail.com",
+    "telephone": "+91 94466 46252",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Thrissur",
+      "addressRegion": "Kerala",
+      "addressCountry": "IN"
+    }
+  }
+}

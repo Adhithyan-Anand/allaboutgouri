@@ -5,6 +5,7 @@ Gouri Lakshmi's portfolio. A single static page (HTML, CSS, vanilla JS, no build
 ```
 site/            the website itself (open site/index.html in a browser to preview)
   index.html     all content lives here
+  context.json   structured info linked from the page for crawlers
   assets/css     styles and every animation keyframe
   assets/js      motion: letter drops, scroll reveals, smooth scroll, lightbox
   img/           her work, exported from the portfolio PDF as WebP
@@ -78,6 +79,7 @@ For instant deploys instead of polling, expose Jenkins through your Cloudflare t
 
 - Text: edit `site/index.html`.
 - New work: drop a `.webp` into `site/img/` and copy any existing `<figure class="piece">…</figure>` block. Keep `width` and `height` matching the image so the page doesn't jump while loading.
+- Link preview card: edit the Open Graph/Twitter tags in the `<head>` of `site/index.html`, keep `site/context.json` in sync, and replace `site/og.jpg` if the preview image changes.
 - Then push to `main` and Jenkins deploys it. Without Jenkins: `docker compose up -d --build`, then purge the Cloudflare cache.
 
 If you edit the small inline `<script>` in the `<head>`, its hash in `nginx/default.conf` (Content-Security-Policy) must be updated too, or browsers will block it. `python3 scripts/verify.py` will tell you if it's out of date. Get the new hash with:

@@ -14,16 +14,3 @@ services:
     cap_drop: [ALL]
     security_opt: ["no-new-privileges:true"]
 
-  # Cloudflare Tunnel. Start with:  docker compose --profile tunnel up -d
-  # Skip this if cloudflared already runs on your server; point it at http://localhost:8088 instead.
-  tunnel:
-    image: cloudflare/cloudflared:latest
-    container_name: allaboutgouri-tunnel
-    profiles: ["tunnel"]
-    restart: unless-stopped
-    command: tunnel --no-autoupdate run
-    environment:
-      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN:-}
-    depends_on:
-      web:
-        condition: service_healthy
